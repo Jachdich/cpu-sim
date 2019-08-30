@@ -1,0 +1,673 @@
+operand-size: 4bit;
+
+two operands:
+00000000 add  reg,reg
+00000001 sub  reg,reg
+00000010 mul  reg,reg
+00000011 div  reg,reg
+00000100 cmp  reg,reg
+00000101 mov  reg,reg
+00000110 xor  reg,reg
+00000111 and  reg,reg
+00001000 or   reg,reg
+00001001 xor2 reg,reg
+00001010 and2 reg,reg
+00001011 or2  reg,reg
+
+one operand:
+00001100 0000 push reg
+00001100 0001 pop reg
+00001100 0010 inc reg
+00001100 0011 jp condition
+00001100 0100 adc
+00001100 0101 sbc
+00001100 0110 add2
+00001100 0111 sub2
+00001100 1000 adc2
+00001100 1001 sbc2
+00001100 1010 dec
+00001100 1100 write reg->port*
+00001100 1101 read  reg<-port*
+00001100 1110 write_default reg
+00001100 1111 read_default reg
+00001101 0000 not reg
+00001101 0001 not2 reg2
+
+zero operands:
+00001101 0010 0000 setDefaultPort *
+00001101 0010 0001 nop
+00001101 0010 0010 hlt
+
+wtf is:
+00001001 11 111 000 out d
+00001001 11 000001 exx,
+
+
+a:0
+b:1
+c:2
+d:3
+e:4
+f:5
+h:6
+l:7
+pc:8
+sp:9
+
+
+ac:0
+bd:1
+ef:2
+hl:3
+
+01000000
+00000111
+01001001
+00000010
+01010010
+00001010
+01011011
+00000000
+00001001
+00111001
+10000011
+10001100
+00001000
+11100011
+11111000
+00010000
+00001010
+11100010
+10001101
+00000110
+
+None  000 0
+c     001 1
+z     010 2
+p     011 3
+nc    100 4
+nz    101 5
+np    110 6
+neg   111 7
+
+
+
+ld a, 7
+ld b, 2
+ld c, 10
+.div
+
+ld d, 0
+
+.l0
+sub b
+cmp b
+inc d
+jp nc .l0
+
+dec d
+out d
+mul a, 10
+
+dec c
+jp nz .div
+
+
+{0:[[self.a_on_a, self.a_on_b, self.ALU_add, self.z_off_main]
+     [self.z_on_main, self.a_off_main, self.reset_T], "add a, a"],
+
+ 1:[[self.a_on_a, self.b_on_b, self.ALU_add, self.z_off_main]
+     [self.z_on_main, self.a_off_main, self.reset_T], "add a, b"],
+
+ 2:[[self.a_on_a, self.c_on_b, self.ALU_add, self.z_off_main]
+     [self.z_on_main, self.a_off_main, self.reset_T], "add a, c"],
+
+ 3:[[self.a_on_a, self.d_on_b, self.ALU_add, self.z_off_main]
+     [self.z_on_main, self.a_off_main, self.reset_T], "add a, d"],
+
+ 4:[[self.a_on_a, self.e_on_b, self.ALU_add, self.z_off_main]
+     [self.z_on_main, self.a_off_main, self.reset_T], "add a, e"],
+
+ 5:[[self.a_on_a, self.f_on_b, self.ALU_add, self.z_off_main]
+     [self.z_on_main, self.a_off_main, self.reset_T], "add a, f"],
+
+ 6:[[self.a_on_a, self.h_on_b, self.ALU_add, self.z_off_main]
+     [self.z_on_main, self.a_off_main, self.reset_T], "add a, h"],
+
+ 7:[[self.a_on_a, self.l_on_b, self.ALU_add, self.z_off_main]
+     [self.z_on_main, self.a_off_main, self.reset_T], "add a, l"],
+
+
+ 8:[[self.a_on_a, self.a_on_b, self.ALU_sub, self.z_off_main]
+     [self.z_on_main, self.a_off_main, self.reset_T], "sub a, a"],
+
+ 9:[[self.a_on_a, self.b_on_b, self.ALU_sub, self.z_off_main]
+     [self.z_on_main, self.a_off_main, self.reset_T], "sub a, b"],
+
+ 10:[[self.a_on_a, self.c_on_b, self.ALU_sub, self.z_off_main]
+     [self.z_on_main, self.a_off_main, self.reset_T], "sub a, c"],
+
+ 11:[[self.a_on_a, self.d_on_b, self.ALU_sub, self.z_off_main]
+     [self.z_on_main, self.a_off_main, self.reset_T], "sub a, d"],
+
+ 12:[[self.a_on_a, self.e_on_b, self.ALU_sub, self.z_off_main]
+     [self.z_on_main, self.a_off_main, self.reset_T], "sub a, e"],
+
+ 13:[[self.a_on_a, self.f_on_b, self.ALU_sub, self.z_off_main]
+     [self.z_on_main, self.a_off_main, self.reset_T], "sub a, f"],
+
+ 14:[[self.a_on_a, self.h_on_b, self.ALU_sub, self.z_off_main]
+     [self.z_on_main, self.a_off_main, self.reset_T], "sub a, h"],
+
+ 15:[[self.a_on_a, self.l_on_b, self.ALU_sub, self.z_off_main]
+     [self.z_on_main, self.a_off_main, self.reset_T], "sub a, l"],
+
+
+ 16:[[self.a_on_a, self.a_on_b, self.ALU_mul, self.z_off_main]
+     [self.z_on_main, self.a_off_main, self.reset_T], "mul a, a"],
+
+ 17:[[self.a_on_a, self.b_on_b, self.ALU_mul, self.z_off_main]
+     [self.z_on_main, self.a_off_main, self.reset_T], "mul a, b"],
+
+ 18:[[self.a_on_a, self.c_on_b, self.ALU_mul, self.z_off_main]
+     [self.z_on_main, self.a_off_main, self.reset_T], "mul a, c"],
+
+ 19:[[self.a_on_a, self.d_on_b, self.ALU_mul, self.z_off_main]
+     [self.z_on_main, self.a_off_main, self.reset_T], "mul a, d"],
+
+ 20:[[self.a_on_a, self.e_on_b, self.ALU_mul, self.z_off_main]
+     [self.z_on_main, self.a_off_main, self.reset_T], "mul a, e"],
+
+ 21:[[self.a_on_a, self.f_on_b, self.ALU_mul, self.z_off_main]
+     [self.z_on_main, self.a_off_main, self.reset_T], "mul a, f"],
+
+ 22:[[self.a_on_a, self.h_on_b, self.ALU_mul, self.z_off_main]
+     [self.z_on_main, self.a_off_main, self.reset_T], "mul a, h"],
+
+ 23:[[self.a_on_a, self.l_on_b, self.ALU_mul, self.z_off_main]
+     [self.z_on_main, self.a_off_main, self.reset_T], "mul a, l"],
+
+
+ 24:[[self.a_on_a, self.a_on_b, self.ALU_div, self.z_off_main]
+     [self.z_on_main, self.a_off_main, self.reset_T], "div a, a"],
+
+ 25:[[self.a_on_a, self.b_on_b, self.ALU_div, self.z_off_main]
+     [self.z_on_main, self.a_off_main, self.reset_T], "div a, b"],
+
+ 26:[[self.a_on_a, self.c_on_b, self.ALU_div, self.z_off_main]
+     [self.z_on_main, self.a_off_main, self.reset_T], "div a, c"],
+
+ 27:[[self.a_on_a, self.d_on_b, self.ALU_div, self.z_off_main]
+     [self.z_on_main, self.a_off_main, self.reset_T], "div a, d"],
+
+ 28:[[self.a_on_a, self.e_on_b, self.ALU_div, self.z_off_main]
+     [self.z_on_main, self.a_off_main, self.reset_T], "div a, e"],
+
+ 29:[[self.a_on_a, self.f_on_b, self.ALU_div, self.z_off_main]
+     [self.z_on_main, self.a_off_main, self.reset_T], "div a, f"],
+
+ 30:[[self.a_on_a, self.h_on_b, self.ALU_div, self.z_off_main]
+     [self.z_on_main, self.a_off_main, self.reset_T], "div a, h"],
+
+ 31:[[self.a_on_a, self.l_on_b, self.ALU_div, self.z_off_main]
+     [self.z_on_main, self.a_off_main, self.reset_T], "div a, l"],
+
+
+ 32:[[self.sp_on_b, self.gen_1, self.ALU_add, self.z_off_main],
+     [self.z_on_s, self.sp_off_s, self.mar_off_s,
+      self.a_on_b, self.gen_0, self.RAM_off_main, self.reset_T], "push a"],
+
+ 33:[[self.sp_on_b, self.gen_1, self.ALU_add, self.z_off_main],
+     [self.z_on_s, self.sp_off_s, self.mar_off_s,
+      self.b_on_b, self.gen_0, self.RAM_off_main, self.reset_T], "push b"],
+
+ 34:[[self.sp_on_b, self.gen_1, self.ALU_add, self.z_off_main],
+     [self.z_on_s, self.sp_off_s, self.mar_off_s,
+      self.c_on_b, self.gen_0, self.RAM_off_main, self.reset_T], "push c"],
+
+ 35:[[self.sp_on_b, self.gen_1, self.ALU_add, self.z_off_main],
+     [self.z_on_s, self.sp_off_s, self.mar_off_s,
+      self.d_on_b, self.gen_0, self.RAM_off_main, self.reset_T], "push d"],
+
+ 36:[[self.sp_on_b, self.gen_1, self.ALU_add, self.z_off_main],
+     [self.z_on_s, self.sp_off_s, self.mar_off_s,
+      self.e_on_b, self.gen_0, self.RAM_off_main, self.reset_T], "push e"],
+
+ 37:[[self.sp_on_b, self.gen_1, self.ALU_add, self.z_off_main],
+     [self.z_on_s, self.sp_off_s, self.mar_off_s,
+      self.f_on_b, self.gen_0, self.RAM_off_main, self.reset_T], "push f"],
+
+ 38:[[self.sp_on_b, self.gen_1, self.ALU_add, self.z_off_main],
+     [self.z_on_s, self.sp_off_s, self.mar_off_s,
+      self.h_on_b, self.gen_0, self.RAM_off_main, self.reset_T], "push h"],
+
+ 39:[[self.sp_on_b, self.gen_1, self.ALU_add, self.z_off_main],
+     [self.z_on_s, self.sp_off_s, self.mar_off_s,
+      self.l_on_b, self.gen_0, self.RAM_off_main, self.reset_T], "push l"],
+
+
+ 40:[[self.sp_on_b, self.gen_1, self.ALU_add, self.z_off_main],
+     [self.z_on_s, self.sp_off_s, self.mar_off_s],
+     self.RAM_on_main, self.a_off_main, self.reset_T], "pop a"],
+
+ 41:[[self.sp_on_b, self.gen_1, self.ALU_add, self.z_off_main],
+     [self.z_on_s, self.sp_off_s, self.mar_off_s],
+     self.RAM_on_main, self.b_off_main, self.reset_T], "pop b"],
+
+ 42:[[self.sp_on_b, self.gen_1, self.ALU_add, self.z_off_main],
+     [self.z_on_s, self.sp_off_s, self.mar_off_s],
+     self.RAM_on_main, self.c_off_main, self.reset_T], "pop c"],
+
+ 43:[[self.sp_on_b, self.gen_1, self.ALU_add, self.z_off_main],
+     [self.z_on_s, self.sp_off_s, self.mar_off_s],
+     self.RAM_on_main, self.d_off_main, self.reset_T], "pop d"],
+
+ 44:[[self.sp_on_b, self.gen_1, self.ALU_add, self.z_off_main],
+     [self.z_on_s, self.sp_off_s, self.mar_off_s],
+     self.RAM_on_main, self.e_off_main, self.reset_T], "pop e"],
+
+ 45:[[self.sp_on_b, self.gen_1, self.ALU_add, self.z_off_main],
+     [self.z_on_s, self.sp_off_s, self.mar_off_s],
+     self.RAM_on_main, self.f_off_main, self.reset_T], "pop f"],
+
+ 46:[[self.sp_on_b, self.gen_1, self.ALU_add, self.z_off_main],
+     [self.z_on_s, self.sp_off_s, self.mar_off_s],
+     self.RAM_on_main, self.h_off_main, self.reset_T], "pop h"],
+
+ 47:[[self.sp_on_b, self.gen_1, self.ALU_add, self.z_off_main],
+     [self.z_on_s, self.sp_off_s, self.mar_off_s],
+     self.RAM_on_main, self.l_off_main, self.reset_T], "pop l"],
+
+
+ 48:[[self.PC_on_b, self.gen_1, self.ALU_add, self.z_off_main, self.MAR_off_main],
+    [self.z_on_s, self.PC_off_s, self.RAM_on_main, self.MSR_off_main],
+    [self.MSR_on_s, self.MAR_off_s, self.RAM_on_main, self.a_off_main, self.reset_T],
+			0b1000000000000000"ld a, abs"],
+
+ 49:[[self.PC_on_b, self.gen_1, self.ALU_add, self.z_off_main, self.MAR_off_main],
+    [self.z_on_s, self.PC_off_s, self.MAR_off_s, self.RAM_on_main, self.MSR_off_main],
+    [self.MSR_on_s, self.MAR_off_s, self.RAM_on_main, self.b_off_main, self.reset_T], "ld b, abs"],
+
+ 50:[[self.PC_on_b, self.gen_1, self.ALU_add, self.z_off_main, self.MAR_off_main],
+    [self.z_on_s, self.PC_off_s, self.MAR_off_s, self.RAM_on_main, self.MSR_off_main],
+    [self.MSR_on_s, self.MAR_off_s, self.RAM_on_main, self.c_off_main, self.reset_T], "ld c, abs"],
+
+ 51:[[self.PC_on_b, self.gen_1, self.ALU_add, self.z_off_main, self.MAR_off_main],
+    [self.z_on_s, self.PC_off_s, self.MAR_off_s, self.RAM_on_main, self.MSR_off_main],
+    [self.MSR_on_s, self.MAR_off_s, self.RAM_on_main, self.d_off_main, self.reset_T], "ld d, abs"],
+
+ 52:[[self.PC_on_b, self.gen_1, self.ALU_add, self.z_off_main, self.MAR_off_main],
+    [self.z_on_s, self.PC_off_s, self.MAR_off_s, self.RAM_on_main, self.MSR_off_main],
+    [self.MSR_on_s, self.MAR_off_s, self.RAM_on_main, self.e_off_main, self.reset_T], "ld e, abs"],
+
+ 53:[[self.PC_on_b, self.gen_1, self.ALU_add, self.z_off_main, self.MAR_off_main],
+    [self.z_on_s, self.PC_off_s, self.MAR_off_s, self.RAM_on_main, self.MSR_off_main],
+    [self.MSR_on_s, self.MAR_off_s, self.RAM_on_main, self.f_off_main, self.reset_T], "ld f, abs"],
+
+ 54:[[self.PC_on_b, self.gen_1, self.ALU_add, self.z_off_main, self.MAR_off_main],
+    [self.z_on_s, self.PC_off_s, self.MAR_off_s, self.RAM_on_main, self.MSR_off_main],
+    [self.MSR_on_s, self.MAR_off_s, self.RAM_on_main, self.h_off_main, self.reset_T], "ld h, abs"],
+
+ 55:[[self.PC_on_b, self.gen_1, self.ALU_add, self.z_off_main, self.MAR_off_main],
+    [self.z_on_s, self.PC_off_s, self.MAR_off_s, self.RAM_on_main, self.MSR_off_main],
+    [self.MSR_on_s, self.MAR_off_s, self.RAM_on_main, self.l_off_main, self.reset_T], "ld l, abs"],
+
+
+ 56:[self.PC_on_b, self.gen_1, self.ALU_add, self.z_off_main, self.MAR_off_main],
+    [self.z_on_s, self.PC_off_s, self.MAR_off_s, self.RAM_on_main, self.f_off_main],
+    [self.a_on_a, self.b_on_b, self.ALU_add, self.reset_T], "cmp a, *"],
+
+ 57:[[self.a_on_a, self.b_on_b, self.ALU_add, self.reset_T], "cmp a, b"],
+
+ 58:[[self.a_on_a, self.c_on_b, self.ALU_add, self.reset_T], "cmp a, c"],
+
+ 59:[[self.a_on_a, self.d_on_b, self.ALU_add, self.reset_T], "cmp a, d"],
+
+ 60:[[self.a_on_a, self.e_on_b, self.ALU_add, self.reset_T], "cmp a, e"],
+
+ 61:[[self.a_on_a, self.f_on_b, self.ALU_add, self.reset_T], "cmp a, f"],
+
+ 62:[[self.a_on_a, self.h_on_b, self.ALU_add, self.reset_T], "cmp a, h"],
+
+ 63:[[self.a_on_a, self.l_on_b, self.ALU_add, self.reset_T], "cmp a, l"],
+
+
+ 64:[[self.PC_on_b, self.gen_1, self.ALU_add, self.z_off_main, self.MAR_off_main],
+     [self.z_on_s, self.PC_off_s, self.MAR_off_s, self.RAM_on_main, self.a_off_main, self.reset_T], "ld a, *"],
+
+ 65:[[self.b_on_a, self.gen_0, self.ALU_add, self.a_off_main, self.reset_T], "ld a, b"],
+
+ 66:[[self.c_on_a, self.gen_0, self.ALU_add, self.a_off_main, self.reset_T], "ld a, c"],
+
+ 67:[[self.d_on_a, self.gen_0, self.ALU_add, self.a_off_main, self.reset_T], "ld a, d"],
+
+ 68:[[self.e_on_a, self.gen_0, self.ALU_add, self.a_off_main, self.reset_T], "ld a, e"],
+
+			0b1000000000000000
+ 69:[[self.f_on_a, self.gen_0, self.ALU_add, self.a_off_main, self.reset_T], "ld a, f"],
+
+ 70:[[self.h_on_a, self.gen_0, self.ALU_add, self.a_off_main, self.reset_T], "ld a, h"],
+
+ 71:[[self.l_on_a, self.gen_0, self.ALU_add, self.a_off_main, self.reset_T], "ld a, l"],
+
+ 72:[[self.a_on_a, self.gen_0, self.ALU_add, self.b_off_main, self.reset_T], "ld b, a"],
+
+ 73:[[self.PC_on_b, self.gen_1, self.ALU_add, self.z_off_main, self.MAR_off_main],
+     [self.z_on_s, self.PC_off_s, self.MAR_off_s, self.RAM_on_main, self.b_off_main, self.reset_T], "ld b, *"],
+
+ 74:[[self.c_on_a, self.gen_0, self.ALU_add, self.b_off_main, self.reset_T], "ld b, c"],
+
+ 75:[[self.d_on_a, self.gen_0, self.ALU_add, self.b_off_main, self.reset_T], "ld b, d"],
+
+ 76:[[self.e_on_a, self.gen_0, self.ALU_add, self.b_off_main, self.reset_T], "ld b, e"]
+,
+ 77:[[self.f_on_a, self.gen_0, self.ALU_add, self.b_off_main, self.reset_T], "ld b, f"],
+
+ 78:[[self.h_on_a, self.gen_0, self.ALU_add, self.b_off_main, self.reset_T], "ld b, h"],
+
+ 79:[[self.l_on_a, self.gen_0, self.ALU_add, self.b_off_main, self.reset_T], "ld b, l"],
+
+ 80:[[self.a_on_a, self.gen_0, self.ALU_add, self.c_off_main, self.reset_T], "ld c, a"],
+
+ 81:[[self.b_on_a, self.gen_0, self.ALU_add, self.c_off_main, self.reset_T], "ld c, b"],
+
+ 82:[[self.PC_on_b, self.gen_1, self.ALU_add, self.z_off_main, self.MAR_off_main],
+     [self.z_on_s, self.PC_off_s, self.MAR_off_s, self.RAM_on_main, self.c_off_main, self.reset_T], "ld c, *"],
+
+ 83:[[self.d_on_a, self.gen_0, self.ALU_add, self.c_off_main, self.reset_T], "ld c, d"],
+
+ 84:[[self.e_on_a, self.gen_0, self.ALU_add, self.c_off_main, self.reset_T], "ld c, e"],
+
+ 85:[[self.f_on_a, self.gen_0, self.ALU_add, self.c_off_main, self.reset_T], "ld c, f"],
+
+ 86:[[self.h_on_a, self.gen_0, self.ALU_add, self.c_off_main, self.reset_T], "ld c, h"],
+
+ 87:[[self.l_on_a, self.gen_0, self.ALU_add, self.c_off_main, self.reset_T], "ld c, l"],
+
+ 88:[[self.a_on_a, self.gen_0, self.ALU_add, self.d_off_main, self.reset_T], "ld d, a"],
+
+ 89:[[self.b_on_a, self.gen_0, self.ALU_add, self.d_off_main, self.reset_T], "ld d, b"],
+
+ 90:[[self.c_on_a, self.gen_0, self.ALU_add, self.d_off_main, self.reset_T], "ld d, c"],
+
+ 91:[[self.PC_on_b, self.gen_1, self.ALU_add, self.z_off_main, self.MAR_off_main],
+     [self.z_on_s, self.PC_off_s, self.MAR_off_s, self.RAM_on_main, self.d_off_main, self.reset_T], "ld d, *"],
+
+ 92:[[self.e_on_a, self.gen_0, self.ALU_add, self.d_off_main, self.reset_T], "ld d, e"],
+
+ 93:[[self.f_on_a, self.gen_0, self.ALU_add, self.d_off_main, self.reset_T], "ld d, f"],
+
+ 94:[[self.h_on_a, self.gen_0, self.ALU_add, self.d_off_main, self.reset_T], "ld d, h"],
+
+ 95:[[self.l_on_a, self.gen_0, self.ALU_add, self.d_off_main, self.reset_T], "ld d, l"],
+
+ 96:[[self.a_on_a, self.gen_0, self.ALU_add, self.e_off_main, self.reset_T], "ld e, a"],
+
+ 97:[[self.b_on_a, self.gen_0, self.ALU_add, self.e_off_main, self.reset_T], "ld e, b"],
+
+ 98:[[self.c_on_a, self.gen_0, self.ALU_add, self.e_off_main, self.reset_T], "ld e, c"],
+
+ 99:[[self.d_on_a, self.gen_0, self.ALU_add, self.e_off_main, self.reset_T], "ld e, d"],
+
+ 100:[[self.PC_on_b, self.gen_1, self.ALU_add, self.z_off_main, self.MAR_off_main],
+     [self.z_on_s, self.PC_off_s, self.MAR_off_s, self.RAM_on_main, self.e_off_main, self.reset_T], "ld e, *"],
+
+ 101:[[self.f_on_a, self.gen_0, self.ALU_add, self.e_off_main, self.reset_T], "ld e, f"],
+
+ 102:[[self.h_on_a, self.gen_0, self.ALU_add, self.e_off_main, self.reset_T], "ld e, h"],
+
+ 103:[[self.l_on_a, self.gen_0, self.ALU_add, self.e_off_main, self.reset_T], "ld e, l"],
+
+ 104:[[self.a_on_a, self.gen_0, self.ALU_add, self.f_off_main, self.reset_T], "ld f, a"],
+
+ 105:[[self.b_on_a, self.gen_0, self.ALU_add, self.f_off_main, self.reset_T], "ld f, b"],
+
+ 106:[[self.c_on_a, self.gen_0, self.ALU_add, self.f_off_main, self.reset_T], "ld f, c"],
+
+ 107:[[self.d_on_a, self.gen_0, self.ALU_add, self.f_off_main, self.reset_T], "ld f, d"],
+
+ 108:[[self.e_on_a, self.gen_0, self.ALU_add, self.f_off_main, self.reset_T], "ld f, e"],
+
+ 109:[[self.PC_on_b, self.gen_1, self.ALU_add, self.z_off_main, self.MAR_off_main],
+     [self.z_on_s, self.PC_off_s, self.MAR_off_s, self.RAM_on_main, self.f_off_main, self.reset_T], "ld f, *"],
+
+ 110:[[self.h_on_a, self.gen_0, self.ALU_add, self.f_off_main, self.reset_T], "ld f, h"],
+
+ 111:[[self.l_on_a, self.gen_0, self.ALU_add, self.f_off_main, self.reset_T], "ld f, l"],
+
+ 112:[[self.a_on_a, self.gen_0, self.ALU_add, self.h_off_main, self.reset_T], "ld h, a"],
+
+ 113:[[self.b_on_a, self.gen_0, self.ALU_add, self.h_off_main, self.reset_T], "ld h, b
+			0b1000000000000000"],
+
+ 114:[[self.c_on_a, self.gen_0, self.ALU_add, self.h_off_main, self.reset_T], "ld h, c"],
+
+ 115:[[self.d_on_a, self.gen_0, self.ALU_add, self.h_off_main, self.reset_T], "ld h, d"],
+
+ 116:[[self.e_on_a, self.gen_0, self.ALU_add, self.h_off_main, self.reset_T], "ld h, e"],
+
+ 117:[[self.f_on_a, self.gen_0, self.ALU_add, self.h_off_main, self.reset_T], "ld h, f"],
+
+ 118:[[self.PC_on_b, self.gen_1, self.ALU_add, self.z_off_main, self.MAR_off_main],
+     [self.z_on_s, self.PC_off_s, self.MAR_off_s, self.RAM_on_main, self.h_off_main, self.reset_T], "ld h, *"],
+
+ 119:[[self.l_on_a, self.gen_0, self.ALU_add, self.h_off_main, self.reset_T], "ld h, l"],
+
+ 120:[[self.a_on_a, self.gen_0, self.ALU_add, self.l_off_main, self.reset_T], "ld l, a"],
+
+ 121:[[self.b_on_a, self.gen_0, self.ALU_add, self.l_off_main, self.reset_T], "ld l, b"],
+
+ 122:[[self.c_on_a, self.gen_0, self.ALU_add, self.l_off_main, self.reset_T], "ld l, c"],
+
+ 123:[[self.d_on_a, self.gen_0, self.ALU_add, self.l_off_main, self.reset_T], "ld l, d"],
+
+ 124:[[self.e_on_a, self.gen_0, self.ALU_add, self.l_off_main, self.reset_T], "ld l, e"],
+
+ 125:[[self.f_on_a, self.gen_0, self.ALU_add, self.l_off_main, self.reset_T], "ld l, f"],
+
+ 126:[[self.h_on_a, self.gen_0, self.ALU_add, self.l_off_main, self.reset_T], "ld l, h"],
+
+ 127:[[self.PC_on_b, self.gen_1, self.ALU_add, self.z_off_main, self.MAR_off_main],
+     [self.z_on_s, self.PC_off_s, self.MAR_off_s, self.RAM_on_main, self.l_off_main, self.reset_T], "ld l, *"],
+
+ 128:[[self.a_on_b, self.gen_1, self.z_off_main],
+      [self.z_on_main, self.a_off_main, self.reset_T], "inc a"],
+
+ 129:[[self.b_on_b, self.gen_1, self.z_off_main],
+      [self.z_on_main, self.b_off_main, self.reset_T], "inc b"],
+
+ 130:[[self.c_on_b, self.gen_1, self.z_off_main],
+      [self.z_on_main, self.c_off_main, self.reset_T], "inc c"],
+
+ 131:[[self.d_on_b, self.gen_1, self.z_off_main],
+      [self.z_on_main, self.d_off_main, self.reset_T], "inc d"],
+
+ 132:[[self.e_on_b, self.gen_1, self.z_off_main],
+      [self.z_on_main, self.e_off_main, self.reset_T], "inc e"],
+
+ 133:[[self.f_on_b, self.gen_1, self.z_off_main],
+      [self.z_on_main, self.f_off_main, self.reset_T], "inc f"],
+
+ 134:[[self.h_on_b, self.gen_1, self.z_off_main],
+      [self.z_on_main, self.h_off_main, self.reset_T], "inc h"],
+
+ 135:[[self.l_on_b, self.gen_1, self.z_off_main],
+      [self.z_on_main, self.l_off_main, self.reset_T], "inc l"],
+}
+0:[[self.PC_on_b, self.gen_1, self.ALU_add, self.z_off_main, self.MAR_off_main],
+[self.z_on_s, self.PC_off_s, self.RAM_on_main, self.IR_off_main], "fd"],
+
+ 1:[[self.PC_on_b, self.gen_1, self.ALU_add, self.z_off_main, self.MAR_off_main],
+[self.z_on_s, self.PC_off_s, self.MAR_off_s, self.RAM_on_main, self.a_off_main, self.reset_T], "ld a, imm"],
+
+ 2:[[self.PC_on_b, self.gen_1, self.ALU_add, self.z_off_main, self.MAR_off_main],
+[self.z_on_s, self.PC_off_s, self.MAR_off_s, self.RAM_on_main, self.b_off_main, self.reset_T], "ld b, imm"],
+
+ 3:[[self.PC_on_b, self.gen_1, self.ALU_add, self.z_off_main, self.MAR_off_main],
+    [self.z_on_s, self.PC_off_s, self.MAR_off_s, self.RAM_on_main, self.c_off_main, self.reset_T], "ld c, imm"],
+
+ 4:[[self.PC_on_b, self.gen_1, self.ALU_add, self.z_off_main, self.MAR_off_main],
+    [self.z_on_s, self.PC_off_s, self.MAR_off_s, self.RAM_on_main, self.d_off_main, self.reset_T], "ld d, imm"],
+
+ 5:[[self.PC_on_b, self.gen_1,    self.ALU_add,   self.z_off_main,  self.MAR_off_main],
+    [self.z_on_s,  self.PC_off_s, self.MAR_off_s, self.RAM_on_main, self.f_off_main, self.reset_T], "ld f, imm"],
+
+ 6:[[self.PC_on_b, self.gen_1, self.ALU_add, self.MAR_off_main],
+    [self.RAM_on_main, self.h_off_main],
+    [self.PC_on_b, self.gen_2, self.ALU_add, self.MAR_off_main, self.z_off_main],
+    [self.RAM_on_main, self.l_off_main, self.z_on_s, self.PC_off_s], "ld hl, imm"],
+
+ 7:[[self.PC_on_b, self.gen_1, self.ALU_add, self.z_off_main, self.MAR_off_main],
+    [self.z_on_s, self.PC_off_s, self.MAR_off_s, self.RAM_on_main, self.MSR_off_main],
+    [self.MSR_on_s, self.MAR_off_s, self.RAM_on_main, self.a_off_main, self.reset_T], "ld a, abs"],
+
+ 8:[[self.PC_on_b, self.gen_1, self.ALU_add, self.z_off_main, self.MAR_off_main],
+    [self.z_on_s, self.PC_off_s, self.MAR_off_s, self.RAM_on_main, self.MSR_off_main],
+    [self.MSR_on_s, self.MAR_off_s, self.RAM_on_main, self.b_off_main, self.reset_T], "ld b, abs"],
+
+ 9:[[self.PC_on_b, self.gen_1, self.ALU_add, self.z_off_main, self.MAR_off_main],
+    [self.z_on_s, self.PC_off_s, self.MAR_off_s, self.RAM_on_main, self.MSR_off_main],
+    [self.MSR_on_s, self.MAR_off_s, self.RAM_on_main, self.c_off_main, self.reset_T], "ld c, abs"],
+
+ 10:[[self.PC_on_b, self.gen_1, self.ALU_add, self.z_off_main, self.MAR_off_main],
+    [self.z_on_s, self.PC_off_s, self.MAR_off_s, self.RAM_on_main, self.MSR_off_main],
+    [self.MSR_on_s, self.MAR_off_s, self.RAM_on_main, self.d_off_main, self.reset_T], "ld d, abs"],
+
+ 11:[[self.PC_on_b, self.gen_1, self.ALU_add, self.z_off_main, self.MAR_off_main],
+    [self.z_on_s, self.PC_off_s, self.MAR_off_s, self.RAM_on_main, self.MSR_off_main],
+    [self.MSR_on_s, self.MAR_off_s, self.RAM_on_main, self.f_off_main, self.reset_T], "ld f, abs"],
+
+ 12:[[self.PC_on_b, self.gen_1, self.ALU_add, self.z_off_main, self.MAR_off_main],
+     [self.RAM_on_main, self.MSR_off_main, self.z_on_s, self.PC_off_s],
+     [self.MSR_on_s, self.MALR_off_s, self.MAR_off_s],
+     [self.MALR_on_b, self.gen_1, self.ALU_add, self.z_off_main],
+     [self.RAM_on_main, self.h_off_main, self.MSR_on_s, self.MAR_off_s],
+     [self.RAM_on_main, self.l_off_main, self.reset_T], "ld hl, abs"],
+
+
+254:[[self.output, self.reset_T], "output"],
+255:[[self.stop_the_clock, self.reset_T], "hlt"],
+                         }
+
+[[self.a_on_a, self.b_on_b, self.ALU_add, self.z_off_main]
+[self.z_on_main, self.a_off_main], "add a, b"],
+
+[[self.c_on_a, self.l_on_b, self.ALU_adc, self.z_off_main],
+ [self.z_on_main, self.c_off_main],
+ [self.a_on_a, self.h_on_b, self.ALU_add, self.z_off_main],
+ [self.z_on_main, self.a_off_main], "add hl, ac"],
+
+add hl, ac
+a on bus a
+h on bus b
+ALU_add
+z off main
+
+z on main
+a off main
+
+c on bus a
+l on bus b
+ALU_adc
+z off main
+
+z on main
+c off main
+
+
+
+add a, b
+a on bus a
+b on bus b
+ALU_add
+z off main
+
+z on main
+a off main
+
+
+LD hl;abs:
+
+pc on b
+1 on a
+ALU_add
+z off main
+MAR off main
+
+RAM on main
+MSR off main
+z on s
+pc off s
+
+MSR on s
+MALR off s
+MAR off s
+
+MALR on b
+1 on a
+ALU_add
+z off main
+
+RAM on main
+h off main
+MSR on s
+MAR off s
+
+RAM on main
+l off main
+t=0
+
+
+LD hl;imm:
+pc on b bus
+1 on a bus
+add
+mar off main
+ram on main
+h off main
+
+pc on b bus
+2 on a bus
+add
+mar off main
+z off main
+
+ram on main
+l off main
+z on s
+pc off s
+
+
+push a
+sp on b
+1 on a
+add
+z off main
+
+z on main
+sp off main
+mar off main
+
+a on b
+0 on b
+ram off main
+
+
+pop a
+sp on b
+-1 on a
+add
+z off main
+
+z on main
+sp off main
+mar off main
+
+ram on main
+a off main
+
+
+cmp a, b
+a on a
+b on b
+add
