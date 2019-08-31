@@ -977,10 +977,7 @@ class Assembler:
         return out
 
 a = Assembler("""
-mov a, 4
-inc a
-push a
-pop b
+mov a, 10 ; opoafsfd comment
 """)
 
 print(a.assemble())

@@ -42,7 +42,7 @@ public class JHexEditorASCII extends JComponent implements MouseListener, KeyLis
 		Dimension d = new Dimension();
 		FontMetrics fn = this.getFontMetrics(JHexEditor.font);
 		int h = fn.getHeight();
-		int nl = this.he.getLineas();
+		int nl = this.he.getLines();
 		d.setSize((fn.stringWidth(" ") + 1) * 16 + this.he.border * 2 + 1, h * nl + this.he.border * 2 + 1);
 		return d;
 	}
@@ -59,8 +59,8 @@ public class JHexEditorASCII extends JComponent implements MouseListener, KeyLis
 		g.setFont(JHexEditor.font);
 
 		// datos ascii
-		int ini = this.he.getInicio() * 16;
-		int fin = ini + this.he.getLineas() * 16;
+		int ini = this.he.getStart() * 16;
+		int fin = ini + this.he.getLines() * 16;
 		if (fin > this.he.buff.length) {
 			fin = this.he.buff.length;
 		}
@@ -71,9 +71,9 @@ public class JHexEditorASCII extends JComponent implements MouseListener, KeyLis
 			if (n == this.he.cursor) {
 				g.setColor(Color.blue);
 				if (this.hasFocus()) {
-					this.he.fondo(g, x, y, 1);
+					this.he.background(g, x, y, 1);
 				} else {
-					this.he.cuadro(g, x, y, 1);
+					this.he.picture(g, x, y, 1);
 				}
 				if (this.hasFocus()) {
 					g.setColor(bg);
@@ -109,7 +109,7 @@ public class JHexEditorASCII extends JComponent implements MouseListener, KeyLis
 		x = x / (fn.stringWidth(" ") + 1);
 		y = y / fn.getHeight();
 		this.debug("x=" + x + " ,y=" + y);
-		return x + (y + this.he.getInicio()) * 16;
+		return x + (y + this.he.getStart()) * 16;
 	}
 
 	// mouselistener

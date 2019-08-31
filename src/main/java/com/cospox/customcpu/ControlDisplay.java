@@ -1,6 +1,8 @@
 package com.cospox.customcpu;
 
+import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GridBagConstraints;
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
@@ -18,9 +20,9 @@ public class ControlDisplay extends JPanel implements ActionListener {
 	
 	private JHexEditor mem;
 	private JComponent[] bus = new JComponent[8];
-	private JPanel bottom = new JPanel(new GridLayout(5, 2));
+	private JPanel bottom    = new JPanel(new GridLayout(5, 2));
 	
-	private JButton clock = new JButton("Clock");
+	private JButton clock        = new JButton("Clock");
 	private JTextField clockFreq = new JTextField("0");
 	
 	private Main instance;
@@ -30,7 +32,12 @@ public class ControlDisplay extends JPanel implements ActionListener {
 		this.instance = instance;
 		this.mem = new JHexEditor(mem);
 		
-		this.add(this.mem);
+		GridBagConstraints gbc = new GridBagConstraints();
+		
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.gridwidth = 3;
+		this.add(this.mem, gbc);
 		
 		this.bus[0] = new JLabel("A    bus:");
 		this.bus[2] = new JLabel("B    bus:");
@@ -42,9 +49,25 @@ public class ControlDisplay extends JPanel implements ActionListener {
 		this.bus[5] = new JTextField("0x0");
 		this.bus[7] = new JTextField("0x0");
 		
-		for (JComponent x: this.bus) {
-			x.setFont(new Font("Courier", Font.PLAIN, 12));
-			this.bottom.add(x);
+		int x = 0, y = 1;
+		gbc.gridwidth = 1;
+		for (JComponent c: this.bus) {
+			c.setFont(new Font("Courier", Font.PLAIN, 12));
+			//c.setMinimumSize(new Dimension(20, 100));
+			gbc.gridx = x;
+			gbc.gridy = y;
+			if (c.getClass().toString().equals(JTextField.class.toString())) {
+				//it's not a label
+				gbc.ipadx = 200;
+			} else {
+				gbc.ipadx = 0;
+			}
+			this.bottom.add(c, gbc);
+			x += 1;
+			if (x > 1) {
+				x = 0;
+				y += 1;
+			}
 		}
 		
 		this.clock.addActionListener(this);
@@ -53,7 +76,9 @@ public class ControlDisplay extends JPanel implements ActionListener {
 		this.bottom.add(this.clock);
 		this.bottom.add(this.clockFreq);
 		
-		this.add(bottom);
+		gbc.gridx = 0;
+		gbc.gridy = 50;
+		this.add(bottom, gbc);
 	}
 	
 	public void update(HashMap<String, Long> buses, HashMap<String, Long> regs) {

@@ -1,6 +1,8 @@
 package com.cospox.customcpu;
 
+import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GridBagConstraints;
 import java.awt.LayoutManager;
 import java.util.HashMap;
 
@@ -51,9 +53,25 @@ public class RegisterDisplay extends JPanel {
 		this.components[31] = new JTextField("0x0");
 		//this.components[1] = new JTextField();
 		
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.fill = GridBagConstraints.BOTH;
+		int x = 0, y = 0;
 		for (JComponent c: this.components) {
-			c.setFont(new Font("Courier", Font.PLAIN, 12));
-			this.add(c);
+			gbc.gridx = x;
+			gbc.gridy = y;
+			if (c.getClass().toString().equals(JTextField.class.toString())) {
+				//it's not a label
+				gbc.ipadx = 100;
+			} else {
+				gbc.ipadx = 0;
+			}
+			c.setFont(new Font("Courier", Font.PLAIN, 15));
+			this.add(c, gbc);
+			x += 1;
+			if (x > 1) {
+				x = 0;
+				y += 1;
+			}
 		}
 	}
 	

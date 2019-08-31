@@ -49,7 +49,7 @@ public class JHexEditorHEX extends JComponent implements MouseListener, KeyListe
 		Dimension d = new Dimension();
 		FontMetrics fn = this.getFontMetrics(JHexEditor.font);
 		int h = fn.getHeight();
-		int nl = this.he.getLineas();
+		int nl = this.he.getLines();
 		d.setSize((fn.stringWidth(" ") + 1) * +(16 * 3 - 1) + this.he.border * 2 + 1, h * nl + this.he.border * 2 + 1);
 		return d;
 	}
@@ -65,8 +65,8 @@ public class JHexEditorHEX extends JComponent implements MouseListener, KeyListe
 
 		g.setFont(JHexEditor.font);
 
-		int ini = this.he.getInicio() * 16;
-		int fin = ini + this.he.getLineas() * 16;
+		int ini = this.he.getStart() * 16;
+		int fin = ini + this.he.getLines() * 16;
 		if (fin > this.he.buff.length) {
 			fin = this.he.buff.length;
 		}
@@ -78,45 +78,45 @@ public class JHexEditorHEX extends JComponent implements MouseListener, KeyListe
 			
 			if (n == this.he.sp) {
 				g.setColor(Color.red);
-				this.he.fondo(g, x * 3, y, 2);
+				this.he.background(g, x * 3, y, 2);
 				
 				if (n == this.he.pc) {
 					g.setColor(Color.green);
-					this.he.fondo(g, x * 3, y, 1);
+					this.he.background(g, x * 3, y, 1);
 				} else if (n == this.he.mar) {
 					g.setColor(Color.yellow);
-					this.he.fondo(g, x * 3, y, 1);
+					this.he.background(g, x * 3, y, 1);
 				}
 			}
 			
 			if (n == this.he.pc && !(n == this.he.sp)) {
 				g.setColor(Color.green);
-				this.he.fondo(g, x * 3, y, 2);
+				this.he.background(g, x * 3, y, 2);
 				
 				if (n == this.he.mar) {
 					g.setColor(Color.yellow);
-					this.he.fondo(g, x * 3, y, 1);
+					this.he.background(g, x * 3, y, 1);
 				}
 			}
 			
 			if (n == this.he.mar && !(n == this.he.sp) && !(n == this.he.pc)) {
 				g.setColor(Color.yellow);
-				this.he.fondo(g, x * 3, y, 2);
+				this.he.background(g, x * 3, y, 2);
 			}
 			/*if (this.he.sp != this.he.pc && this.he.sp != this.he.mar && this.he.pc != this.he.mar) {
 				if (n == this.he.sp) {
 					g.setColor(Color.red.darker());
-					this.he.fondo(g, x * 3, y, 2);
+					this.he.background(g, x * 3, y, 2);
 				}
 			
 				if (n == this.he.pc) {
 					g.setColor(Color.green.darker());
-					this.he.fondo(g, x * 3, y, 2);
+					this.he.background(g, x * 3, y, 2);
 				}
 			
 				if (n == this.he.mar) {
 					g.setColor(Color.yellow.darker());
-					this.he.fondo(g, x * 3, y, 2);
+					this.he.background(g, x * 3, y, 2);
 				}
 			//SP: Red
 			//PC: Green
@@ -124,25 +124,25 @@ public class JHexEditorHEX extends JComponent implements MouseListener, KeyListe
 			} else if (this.he.sp == this.he.pc) { //SP and PC are on same addr
 				if (n == this.he.pc) {
 					g.setColor(Color.green.darker());
-					this.he.fondo(g, x * 3, y, 2);
+					this.he.background(g, x * 3, y, 2);
 					g.setColor(Color.red.darker());
-					this.he.fondo(g, x * 3, y, 1);
+					this.he.background(g, x * 3, y, 1);
 				}
 				
 			} else if (this.he.sp == this.he.mar) { //SP and MAR are on same addr
 				if (n == this.he.sp) {
 					g.setColor(Color.red.darker());
-					this.he.fondo(g, x * 3, y, 2);
+					this.he.background(g, x * 3, y, 2);
 					g.setColor(Color.yellow.darker());
-					this.he.fondo(g, x * 3, y, 1);
+					this.he.background(g, x * 3, y, 1);
 				}
 				
 			} else if (this.he.mar == this.he.pc) { //PC and MAR are on same addr
 				if (n == this.he.pc) {
 					g.setColor(Color.yellow.darker());
-					this.he.fondo(g, x * 3, y, 2);
+					this.he.background(g, x * 3, y, 2);
 					g.setColor(Color.green.darker());
-					this.he.fondo(g, x * 3, y, 1);
+					this.he.background(g, x * 3, y, 1);
 					System.out.println("ASaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 				}
 			}*/
@@ -150,12 +150,12 @@ public class JHexEditorHEX extends JComponent implements MouseListener, KeyListe
 			if (n == this.he.cursor) {
 				if (this.hasFocus()) {
 					g.setColor(fg);
-					this.he.fondo(g, x * 3, y, 2);
+					this.he.background(g, x * 3, y, 2);
 					g.setColor(Color.blue);
-					this.he.fondo(g, x * 3 + this.cursor, y, 1);
+					this.he.background(g, x * 3 + this.cursor, y, 1);
 				} else {
 					g.setColor(Color.blue);
-					this.he.cuadro(g, x * 3, y, 2);
+					this.he.picture(g, x * 3, y, 2);
 				}
 
 				if (this.hasFocus()) {
@@ -189,7 +189,7 @@ public class JHexEditorHEX extends JComponent implements MouseListener, KeyListe
 		x = x / ((fn.stringWidth(" ") + 1) * 3);
 		y = y / fn.getHeight();
 		this.debug("x=" + x + " ,y=" + y);
-		return x + (y + this.he.getInicio()) * 16;
+		return x + (y + this.he.getStart()) * 16;
 	}
 
 	// mouselistener

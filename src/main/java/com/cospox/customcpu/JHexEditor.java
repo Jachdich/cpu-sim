@@ -34,8 +34,8 @@ public class JHexEditor extends JPanel implements FocusListener, AdjustmentListe
 	public boolean DEBUG = false;
 	private JPanel panel;
 	private JScrollBar sb;
-	private int inicio = 0;
-	private int lineas = 10;
+	private int start = 0; 
+	private int lines = 10;
 	
 	private Color bg, fg;
 
@@ -51,24 +51,24 @@ public class JHexEditor extends JPanel implements FocusListener, AdjustmentListe
 		this.sb = new JScrollBar(Adjustable.VERTICAL);
 		this.sb.addAdjustmentListener(this);
 		this.sb.setMinimum(0);
-		this.sb.setMaximum(buff.length / this.getLineas());
+		this.sb.setMaximum(buff.length / this.getLines());
 
 		JPanel p1, p2, p3;
-		// centro
+		//Centre
 		p1 = new JPanel(new BorderLayout(1, 1));
 		p1.add(new JHexEditorHEX(this), BorderLayout.CENTER);
-		p1.add(new Columnas(), BorderLayout.NORTH);
+		p1.add(new Columns(), BorderLayout.NORTH);
 
-		// izq.
+		//left
 		p2 = new JPanel(new BorderLayout(1, 1));
-		p2.add(new Filas(), BorderLayout.CENTER);
-		p2.add(new Caja(), BorderLayout.NORTH);
+		p2.add(new Rows(), BorderLayout.CENTER);
+		p2.add(new Box(), BorderLayout.NORTH);
 
-		// der
+		//right
 		p3 = new JPanel(new BorderLayout(1, 1));
 		p3.add(this.sb, BorderLayout.EAST);
-		p3.add(new JHexEditorASCII(this), BorderLayout.CENTER);
-		p3.add(new Caja(), BorderLayout.NORTH);
+		p3.add(new JHexEditorASCII(this), BorderLayout.WEST);
+		p3.add(new Box(), BorderLayout.NORTH);
 
 		this.panel = new JPanel();
 		this.panel.setLayout(new BorderLayout(1, 1));
@@ -84,14 +84,14 @@ public class JHexEditor extends JPanel implements FocusListener, AdjustmentListe
 	public void paint(Graphics g) {
 		FontMetrics fn = this.getFontMetrics(font);
 		Rectangle rec = this.getBounds();
-		this.lineas = rec.height / fn.getHeight() - 1;
+		this.lines = rec.height / fn.getHeight() - 1;
 		int n = this.buff.length / 16 - 1;
-		if (this.lineas > n) {
-			this.lineas = n;
-			this.inicio = 0;
+		if (this.lines > n) {
+			this.lines = n;
+			this.start = 0;
 		}
 
-		this.sb.setValues(this.getInicio(), + this.getLineas(), 0, this.buff.length / 16);
+		this.sb.setValues(this.getStart(), + this.getLines(), 0, this.buff.length / 16);
 		this.sb.setValueIsAdjusting(true);
 		super.paint(g);
 	}
@@ -99,34 +99,34 @@ public class JHexEditor extends JPanel implements FocusListener, AdjustmentListe
 	protected void actualizaCursor() {
 		int n = this.cursor / 16;
 
-		//System.out.print("- " + this.inicio + "<" + n + "<" + (this.lineas + this.inicio) + "(" + this.lineas + ")");
+		//System.out.print("- " + this.start + "<" + n + "<" + (this.lines + this.start) + "(" + this.lines + ")");
 
-		if (n < this.inicio) {
-			this.inicio = n;
-		} else if (n >= this.inicio + this.lineas) {
-			this.inicio = n - (this.lineas - 1);
+		if (n < this.start) {
+			this.start = n;
+		} else if (n >= this.start + this.lines) {
+			this.start = n - (this.lines - 1);
 		}
 
-		//System.out.println(" - " + this.inicio + "<" + n + "<" + (this.lineas + this.inicio) + "(" + this.lineas + ")");
+		//System.out.println(" - " + this.start + "<" + n + "<" + (this.lines + this.start) + "(" + this.lines + ")");
 
 		this.repaint();
 	}
 
-	protected int getInicio() {
-		return this.inicio;
+	protected int getStart() {
+		return this.start;
 	}
 
-	protected int getLineas() {
-		return this.lineas;
+	protected int getLines() {
+		return this.lines;
 	}
 
-	protected void fondo(Graphics g, int x, int y, int s) {
+	protected void background(Graphics g, int x, int y, int s) {
 		FontMetrics fn = this.getFontMetrics(font);
 		g.fillRect((fn.stringWidth(" ") + 1) * x + this.border, fn.getHeight() * y + this.border,
 				(fn.stringWidth(" ") + 1) * s, fn.getHeight() + 1);
 	}
 
-	protected void cuadro(Graphics g, int x, int y, int s) {
+	protected void picture(Graphics g, int x, int y, int s) {
 		FontMetrics fn = this.getFontMetrics(font);
 		g.drawRect((fn.stringWidth(" ") + 1) * x + this.border, fn.getHeight() * y + this.border,
 				(fn.stringWidth(" ") + 1) * s, fn.getHeight() + 1);
@@ -150,21 +150,21 @@ public class JHexEditor extends JPanel implements FocusListener, AdjustmentListe
 
 	@Override
 	public void adjustmentValueChanged(AdjustmentEvent e) {
-		this.inicio = e.getValue();
-		if (this.inicio < 0) {
-			this.inicio = 0;
+		this.start = e.getValue();
+		if (this.start < 0) {
+			this.start = 0;
 		}
 		this.repaint();
 	}
 
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
-		this.inicio += e.getUnitsToScroll();
-		if (this.inicio + this.lineas >= this.buff.length / 16) {
-			this.inicio = this.buff.length / 16 - this.lineas;
+		this.start += e.getUnitsToScroll();
+		if (this.start + this.lines >= this.buff.length / 16) {
+			this.start = this.buff.length / 16 - this.lines;
 		}
-		if (this.inicio < 0) {
-			this.inicio = 0;
+		if (this.start < 0) {
+			this.start = 0;
 		}
 		this.repaint();
 	}
@@ -172,14 +172,14 @@ public class JHexEditor extends JPanel implements FocusListener, AdjustmentListe
 	public void keyPressed(KeyEvent e) {
 		switch (e.getKeyCode()) {
 		case 33: // rep
-			if (this.cursor >= 16 * this.lineas) {
-				this.cursor -= 16 * this.lineas;
+			if (this.cursor >= 16 * this.lines) {
+				this.cursor -= 16 * this.lines;
 			}
 			this.actualizaCursor();
 			break;
 		case 34: // fin
-			if (this.cursor < this.buff.length - 16 * this.lineas) {
-				this.cursor += 16 * this.lineas;
+			if (this.cursor < this.buff.length - 16 * this.lines) {
+				this.cursor += 16 * this.lines;
 			}
 			this.actualizaCursor();
 			break;
@@ -218,10 +218,10 @@ public class JHexEditor extends JPanel implements FocusListener, AdjustmentListe
 		}
 	}
 
-	private class Columnas extends JPanel {
+	private class Columns extends JPanel {
 		private static final long serialVersionUID = 1L;
 
-		public Columnas() {
+		public Columns() {
 			this.setLayout(new BorderLayout(1, 1));
 		}
 
@@ -251,7 +251,7 @@ public class JHexEditor extends JPanel implements FocusListener, AdjustmentListe
 
 			for (int n = 0; n < 16; n++) {
 				if (n == JHexEditor.this.cursor % 16) {
-					JHexEditor.this.cuadro(g, n * 3, 0, 2);
+					JHexEditor.this.picture(g, n * 3, 0, 2);
 				}
 				String s = "00" + Integer.toHexString(n);
 				s = s.substring(s.length() - 2);
@@ -260,7 +260,7 @@ public class JHexEditor extends JPanel implements FocusListener, AdjustmentListe
 		}
 	}
 
-	private class Caja extends JPanel {
+	private class Box extends JPanel {
 		private static final long serialVersionUID = 1L;
 
 		@Override
@@ -279,10 +279,10 @@ public class JHexEditor extends JPanel implements FocusListener, AdjustmentListe
 
 	}
 
-	private class Filas extends JPanel {
+	private class Rows extends JPanel {
 		private static final long serialVersionUID = 1L;
 
-		public Filas() {
+		public Rows() {
 			this.setLayout(new BorderLayout(1, 1));
 		}
 
@@ -296,7 +296,7 @@ public class JHexEditor extends JPanel implements FocusListener, AdjustmentListe
 			Dimension d = new Dimension();
 			FontMetrics fn = this.getFontMetrics(font);
 			int h = fn.getHeight();
-			int nl = JHexEditor.this.getLineas();
+			int nl = JHexEditor.this.getLines();
 			d.setSize((fn.stringWidth(" ") + 1) * 8 + JHexEditor.this.border * 2 + 1,
 					h * nl + JHexEditor.this.border * 2 + 1);
 			return d;
@@ -310,12 +310,12 @@ public class JHexEditor extends JPanel implements FocusListener, AdjustmentListe
 			g.setColor(fg);
 			g.setFont(font);
 
-			int ini = JHexEditor.this.getInicio();
-			int fin = ini + JHexEditor.this.getLineas();
+			int ini = JHexEditor.this.getStart();
+			int fin = ini + JHexEditor.this.getLines();
 			int y = 0;
 			for (int n = ini; n < fin; n++) {
 				if (n == JHexEditor.this.cursor / 16) {
-					JHexEditor.this.cuadro(g, 0, y, 8);
+					JHexEditor.this.picture(g, 0, y, 8);
 				}
 				String s = "0000000000000" + Integer.toHexString(n);
 				s = s.substring(s.length() - 8);

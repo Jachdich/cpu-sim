@@ -1,8 +1,4 @@
 //TODO
-//MAR is updated at wrong time??? IDK?????????? 0x3 when it's indexing 0x2???????
-//add display to show current indexed memory location
-//make MAR increment twice per fetch
-//Other stuff
 //Regs can be updated by user by changing displayed values;
 
 package com.cospox.customcpu;
@@ -21,7 +17,7 @@ public class Main extends JFrame {
 	
 	private GridBagConstraints c = new GridBagConstraints();
 	
-	private RegisterDisplay left = new RegisterDisplay(new GridLayout(16, 2));
+	private RegisterDisplay left = new RegisterDisplay(new GridBagLayout());
 	private ControlDisplay right;
 	
 	public byte[] mem = new byte[64 * 1024];
@@ -64,7 +60,7 @@ public class Main extends JFrame {
 	
 	private void initGUI() {
 		this.setLayout(new GridBagLayout());
-		this.right = new ControlDisplay(new GridLayout(2, 1), this.mem, this);
+		this.right = new ControlDisplay(new GridBagLayout(), this.mem, this);
 		c.fill = GridBagConstraints.BOTH;
 		c.weightx = 1;
 		c.weighty = 1;
@@ -78,7 +74,8 @@ public class Main extends JFrame {
 		this.add(this.left, c);
 		this.add(this.right, c);
 
-		this.setSize(1300, 1080 / 2);
+		//this.setSize(0, 1080 / 2);
+		this.pack();
 		this.setVisible(true); //making the frame visible  
 	}
 	
