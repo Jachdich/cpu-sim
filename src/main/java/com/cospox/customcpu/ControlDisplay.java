@@ -1,6 +1,5 @@
 package com.cospox.customcpu;
 
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridLayout;

@@ -35,7 +35,7 @@ public class JHexEditor extends JPanel implements FocusListener, AdjustmentListe
 	private JPanel panel;
 	private JScrollBar sb;
 	private int start = 0; 
-	private int lines = 10;
+	public  int lines = 20;
 	
 	private Color bg, fg;
 

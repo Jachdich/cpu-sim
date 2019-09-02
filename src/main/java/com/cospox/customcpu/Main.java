@@ -5,8 +5,6 @@ package com.cospox.customcpu;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
@@ -73,6 +71,12 @@ public class Main extends JFrame {
         
 		this.add(this.left, c);
 		this.add(this.right, c);
+		
+		this.right.addComponentListener(new ComponentAdapter() {
+			public void componentResized(ComponentEvent e) {
+				right.resizeEvent(e);
+			}
+		});
 
 		//this.setSize(0, 1080 / 2);
 		this.pack();
