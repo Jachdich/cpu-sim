@@ -8,7 +8,7 @@ public class Simulator {
 	public byte[] mem;
 	public long a, b, s, main = 0;
 	private boolean clockIsHigh = false;
-	private HashMap<String, Long> regs = new HashMap<String, Long>(13);
+	public HashMap<String, Long> regs = new HashMap<String, Long>(13);
 	
 	public Simulator(byte[] mem) {
 		this.mem = mem;

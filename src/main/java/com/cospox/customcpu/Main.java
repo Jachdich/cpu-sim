@@ -18,7 +18,7 @@ public class Main extends JFrame {
 	
 	private GridBagConstraints c = new GridBagConstraints();
 	
-	private RegisterDisplay left = new RegisterDisplay(new GridBagLayout());
+	private RegisterDisplay left;
 	private ControlDisplay right;
 	
 	public byte[] mem = new byte[64 * 1024];
@@ -40,6 +40,7 @@ public class Main extends JFrame {
 	
 	public Main() {
 		super("Custom Processor Sim");
+		this.sim = new Simulator(this.mem);
 		this.initGUI();
 		byte[] temp = {
 				0x05,
@@ -55,13 +56,13 @@ public class Main extends JFrame {
 		for (int i = 0; i < temp.length; i++) {
 			this.mem[i] = temp[i];
 		}
-		this.sim = new Simulator(this.mem);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
 	
 	private void initGUI() {
 		this.setLayout(new GridBagLayout());
 		this.right = new ControlDisplay(new GridBagLayout(), this.mem, this);
+		this.left = new RegisterDisplay(new GridBagLayout(), this.sim);
 		c.fill = GridBagConstraints.BOTH;
 		c.weightx = 1;
 		c.weighty = 1;

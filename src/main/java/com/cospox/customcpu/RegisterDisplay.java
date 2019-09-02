@@ -9,14 +9,19 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.JTextComponent;
 
 public class RegisterDisplay extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
 	private JComponent[] components = new JComponent[32];
+	private Simulator sim;
 	
-	public RegisterDisplay(LayoutManager l) {
+	public RegisterDisplay(LayoutManager l, Simulator sim) {
 		super(l);
+		this.sim = sim;
 		this.components[0] = new JLabel("A:");
 		this.components[2] = new JLabel("B:");
 		this.components[4] = new JLabel("C:");
@@ -58,9 +63,25 @@ public class RegisterDisplay extends JPanel {
 		for (JComponent c: this.components) {
 			gbc.gridx = x;
 			gbc.gridy = y;
+			final int y_f = y;
 			if (c.getClass().toString().equals(JTextField.class.toString())) {
 				//it's not a label
 				gbc.ipadx = 100;
+				((JTextComponent) c).getDocument().addDocumentListener(new DocumentListener() {
+					  public void changedUpdate(DocumentEvent e) {
+					    update();
+					  }
+					  public void removeUpdate(DocumentEvent e) {
+					    update();
+					  }
+					  public void insertUpdate(DocumentEvent e) {
+					    update();
+					  }
+					  
+					  public void update() {
+						  textChanged((JTextComponent)c, y_f);
+					  }
+					});
 			} else {
 				gbc.ipadx = 0;
 			}
@@ -72,6 +93,25 @@ public class RegisterDisplay extends JPanel {
 				y += 1;
 			}
 		}
+	}
+	
+	public void textChanged(JTextComponent c, int index) {
+		String text = c.getText();
+		System.out.println(text);
+		if (HelperFunctions.isHex(text)) {
+			this.updateReg(Long.parseUnsignedLong(text.substring(2), 16), this.getRegFromIndex(index));
+		}
+	}
+	
+	private String getRegFromIndex(int index) {
+		String a = new String[]{"a", "b", "c", "d", "e", "f", "h", "l", "pc", "sp", "ir", "mar", "msr", "malr", "z", "t"}[index];
+		System.out.println(a);
+		return a;
+		
+	}
+	
+	public void updateReg(long value, String reg) {
+		this.sim.regs.put(reg, value);
 	}
 	
 	public void update(HashMap<String, Long> regs) {
