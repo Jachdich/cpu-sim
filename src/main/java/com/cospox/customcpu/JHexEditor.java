@@ -29,7 +29,7 @@ public class JHexEditor extends JPanel implements FocusListener, AdjustmentListe
 	byte[] buff;
 	public long pc, mar, sp = 0;
 	public int cursor;
-	protected static Font font = new Font("Monospaced", Font.BOLD, 12);
+	protected static Font font = ControlDisplay.font;
 	protected int border = 2;
 	public boolean DEBUG = false;
 	private JPanel panel;
@@ -118,6 +118,11 @@ public class JHexEditor extends JPanel implements FocusListener, AdjustmentListe
 
 	protected int getLines() {
 		return this.lines;
+	}
+	
+	public void setLines(int lines) { 
+		this.lines = lines;
+		this.sb.setMaximum(buff.length / this.getLines());
 	}
 
 	protected void background(Graphics g, int x, int y, int s) {

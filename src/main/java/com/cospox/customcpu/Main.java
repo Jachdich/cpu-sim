@@ -5,6 +5,9 @@ package com.cospox.customcpu;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
@@ -72,10 +75,15 @@ public class Main extends JFrame {
 		this.add(this.left, c);
 		this.add(this.right, c);
 		
-		this.right.addComponentListener(new ComponentAdapter() {
+		this.right.addComponentListener(new ComponentListener() {
+			@Override
 			public void componentResized(ComponentEvent e) {
 				right.resizeEvent(e);
 			}
+
+			@Override public void componentHidden(ComponentEvent e) {}
+			@Override public void componentMoved(ComponentEvent e) {}
+			@Override public void componentShown(ComponentEvent e) {}
 		});
 
 		//this.setSize(0, 1080 / 2);

@@ -6,6 +6,7 @@ import java.awt.GridLayout;
 import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
 import java.util.HashMap;
 
 import javax.swing.JButton;
@@ -26,16 +27,22 @@ public class ControlDisplay extends JPanel implements ActionListener {
 	
 	private Main instance;
 	
+	public static Font font = new Font("Monospaced", Font.BOLD, 12);
+	
 	public ControlDisplay(LayoutManager l, byte[] mem, Main instance) {
 		super(l);
 		this.instance = instance;
 		this.mem = new JHexEditor(mem);
+		//this.mem.setPreferredSize(new Dimension(1000000, 1000000));
 		
 		GridBagConstraints gbc = new GridBagConstraints();
 		
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		gbc.gridwidth = 3;
+		gbc.weighty = 1;
+		gbc.weightx = 1;
+		gbc.fill = GridBagConstraints.VERTICAL;
 		this.add(this.mem, gbc);
 		
 		this.bus[0] = new JLabel("A    bus:");
@@ -75,8 +82,9 @@ public class ControlDisplay extends JPanel implements ActionListener {
 		this.bottom.add(this.clock);
 		this.bottom.add(this.clockFreq);
 		
-		gbc.gridx = 0;
-		gbc.gridy = 50;
+		gbc.weighty = 0;
+		gbc.weightx = 0;
+		gbc.fill = GridBagConstraints.NONE;
 		this.add(bottom, gbc);
 	}
 	
@@ -100,5 +108,16 @@ public class ControlDisplay extends JPanel implements ActionListener {
 		if (e.getSource() == this.clock) {
 			this.instance.clock();
 		}
+	}
+	
+	public void resizeEvent(ComponentEvent e) {
+//		final int OTHER_COMPONENTS_HEIGHT = 300;
+//		Dimension size = this.getSize();
+//		double y = size.getHeight() - OTHER_COMPONENTS_HEIGHT;
+//		long characters = Math.round(y / this.getFontMetrics(font).getHeight());
+//		int lines = (int)characters > 0 ? (int)characters : 1;
+//		System.out.println(lines);
+//		this.mem.setLines(lines);
+//		this.mem.repaint();
 	}
 }
