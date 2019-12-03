@@ -97,7 +97,7 @@ public class RegisterDisplay extends JPanel {
 	
 	public void textChanged(JTextComponent c, int index) {
 		String text = c.getText();
-		System.out.println(text);
+		//System.out.println(text);
 		if (HelperFunctions.isHex(text)) {
 			this.updateReg(Long.parseUnsignedLong(text.substring(2), 16), this.getRegFromIndex(index));
 		}
@@ -105,7 +105,7 @@ public class RegisterDisplay extends JPanel {
 	
 	private String getRegFromIndex(int index) {
 		String a = new String[]{"a", "b", "c", "d", "e", "f", "h", "l", "pc", "sp", "ir", "mar", "msr", "malr", "z", "t"}[index];
-		System.out.println(a);
+		//System.out.println(a);
 		return a;
 		
 	}

@@ -21,7 +21,7 @@ public class Main extends JFrame {
 	private RegisterDisplay left;
 	private ControlDisplay right;
 	
-	public byte[] mem = new byte[64 * 1024];
+	public byte[] mem = new byte[64 * 1024 * 1024];
 	
 	public Simulator sim;
 
@@ -46,13 +46,16 @@ public class Main extends JFrame {
 				0x05,
 				0x00,
 				0x00,
-				0x04,
-				0x0c,
-				0x20,
-				0x0c,
+				0x01,
+				0x05,
+				0x11,
 				0x00,
-				0x0c,
-				0x11,};
+				0x02,
+				0x00,
+				0x01,
+				0x05,
+				0x12,
+			};
 		for (int i = 0; i < temp.length; i++) {
 			this.mem[i] = temp[i];
 		}
@@ -93,8 +96,10 @@ public class Main extends JFrame {
 	}
 	
 	public void clock() {
+		//for (int i = 0; i < 100; i++) {
 		this.sim.clock();
 		this.updateDisplays();
+		//}
 	}
 	
 	private void updateDisplays() {

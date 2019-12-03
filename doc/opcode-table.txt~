@@ -5,14 +5,11 @@ two operands:
 00000001 sub  reg,reg
 00000010 mul  reg,reg
 00000011 div  reg,reg
-00000100 cmp  reg,reg
-00000101 mov  reg,reg
-00000110 xor  reg,reg
-00000111 and  reg,reg
-00001000 or   reg,reg
-00001001 xor2 reg,reg
-00001010 and2 reg,reg
-00001011 or2  reg,reg
+00000100 xor  reg,reg
+00000101 and  reg,reg
+00000110 or   reg,reg
+00000111 cmp  reg,reg
+00001000 mov  reg,reg
 
 one operand:
 00001100 0000 push reg
@@ -21,26 +18,66 @@ one operand:
 00001100 0011 jp condition
 00001100 0100 adc
 00001100 0101 sbc
-00001100 0110 add2
-00001100 0111 sub2
-00001100 1000 adc2
-00001100 1001 sbc2
 00001100 1010 dec
 00001100 1100 write reg->port*
 00001100 1101 read  reg<-port*
-00001100 1110 write_default reg
-00001100 1111 read_default reg
-00001101 0000 not reg
-00001101 0001 not2 reg2
+00001100 1110 not reg
 
 zero operands:
-00001101 0010 0000 setDefaultPort *
-00001101 0010 0001 nop
-00001101 0010 0010 hlt
+00001101 0000 0001 nop
+00001101 0000 0010 hlt
 
 wtf is:
 00001001 11 111 000 out d
 00001001 11 000001 exx,
+
+
+REG  REG  REG  MAR
+ON A ON B OFF  OFF  ALU  S
+          MAIN MAIN op   BUS T   GEN RAM FLAGS
+0000 0000 0000  0   000  000 0   00  00  0
+<<21 <<17 <<13 <<12 <<9  <<6 <<5 <<3 <<1 <<0 
+
+pc_off_s: SBUS 001
+z_on_s:        010
+mar_off_s:     100
+
+reset_t:  its obvs
+
+gen_1:    01
+gen_2:    10
+
+ram_on_a: 01
+ram_off_main:10
+
+update_flags: its obvs
+
+
+alu_add:  000
+alu_sub:  001
+alu_mul:  010
+alu_div:  011
+alu_not:  100
+alu_and:  101
+alu_or:   110
+alu_xor:  111
+
+a: 0000
+b: 0001
+c: 0010
+d: 0011
+e: 0100
+f: 0101
+h: 0110
+l: 0111
+pc: 1000
+sp: 1001
+z:  1010
+ir: 1011
+mar:1100
+None:1111
+
+
 
 
 a:0
@@ -53,12 +90,6 @@ h:6
 l:7
 pc:8
 sp:9
-
-
-ac:0
-bd:1
-ef:2
-hl:3
 
 01000000
 00000111

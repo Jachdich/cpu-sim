@@ -744,7 +744,7 @@ class Assembler:
 "inc sp": 0b0000110000101001,
 "jp *": 0b0000110000110000,
 "jp c,*": 0b0000110000110001,
-"jp z,*": 0b0000110000110010,
+"jpz *": 0b0000110000110010,
 "jp p,*": 0b0000110000110011,
 "jp nc,*": 0b0000110000110100,
 "jp nz,*": 0b0000110000110101,
@@ -896,17 +896,25 @@ class Assembler:
             "l": 7,
             "pc": 8,
             "sp": 9,
+
+            "ab": 0,
+            "cd": 1,
+            "ef": 2,
+            "hl": 3,
         }
 
         self.NUM_ARGS = {
             "mov": 2,
             "add": 2,
             "jp" : 1,
+            "jpz": 1,
             "nop": 0,
             "push": 1,
             "pop": 1,
             "inc": 1,
             "dec": 1,
+            "xor2": 2,
+            "cmp": 2,
             }
 
     def get_type(self, arg):
@@ -951,6 +959,7 @@ class Assembler:
                 num_args = self.NUM_ARGS[base]
 
                 imm = None
+                print(instr)
                 if num_args > 0:
 
                     args = instr.split(" ")[1].split(",")
@@ -962,22 +971,55 @@ class Assembler:
                         imm = int(args[-1])
                         args[-1] = "*"
 
-                #print(" ".join([base, ",".join(args)]))
-                #print(self.pad(bin(self.OPCODES[" ".join([base, ",".join(args)])])[2:], l=16))
+                    if args[-1].startswith("."):
+                        imm = args[-1]
+                        args[-1] = "*"
 
                     hexop = self.pad(hex(self.OPCODES[" ".join([base, ",".join(args)])])[2:], l=4)
                 else:
                     hexop = self.pad(hex(self.OPCODES[instr])[2:], l=4)
                         
                 out += "0x" + hexop[:2] + ",\n0x" + hexop[2:] + ",\n"
-                if imm != None:
+                if imm != None and not isinstance(imm, str):
                     thing = self.pad(hex(imm)[2:], l=4)
                     out += "0x" + thing[:2] + ",\n0x" + thing[2:] + ",\n"
-                    
-        return out
+
+                if isinstance(imm, str):
+                    out += imm + "\n"
+
+            else:
+                out += instr + "\n"
+        nout = ""
+
+        jpdct = {}
+        for i, x in enumerate(out.split("\n")):
+            if x.endswith(":") and x.startswith("."):
+                print(x)
+                jpdct[x.replace(":", "")] = i
+
+        for x in out.split("\n"):
+            if x.startswith(".") and not x.endswith(":"):
+                nout += hex(jpdct[x]) + ",\n"
+            else:
+                nout += x + "\n"
+        
+        return nout
 
 a = Assembler("""
-mov a, 10 ; opoafsfd comment
+mov a, 15
+inc a
+mov b, 16
+cmp a, b
+jpz .asd
+jp .asdf
+
+.asd:
+mov c, 20
+jp .end
+.asdf:
+mov c, 40
+jp .end
+.end:
 """)
 
 print(a.assemble())
